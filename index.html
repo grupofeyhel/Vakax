@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vakax — Sistema de gestión ganadera</title>
-<meta name="description" content="Vakax — Controla tu ganado, finanzas, vacunas y potreros desde tu celular. Sin internet, sin papeles.">
+<meta name="description" content="Vakax — Controla tu ganado, finanzas, vacunas y potreros desde tu celular.">
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5YRMT5H5M3"></script>
 <script>
@@ -15,82 +15,203 @@ gtag('config','G-5YRMT5H5M3');
 </script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--verde:#1D9E75;--verde-osc:#0F6E56;--tx:#1a1a1a;--tx2:#555;--gris:#f0f0ed;}
+:root{--verde:#1D9E75;--verde-osc:#0F6E56;--tx:#1a1a1a;--tx2:#555;--gris:#f0f0ed;--rojo:#CC0000;}
 body{font-family:'Segoe UI',system-ui,sans-serif;color:var(--tx);background:#fff;}
 
-/* HERO */
-.hero{background:var(--verde-osc);color:#fff;padding:60px 24px 80px;text-align:center;}
-.hero .marca{font-size:36px;font-weight:900;letter-spacing:4px;margin-bottom:16px;}
-.hero h1{font-size:28px;font-weight:800;line-height:1.3;margin-bottom:16px;max-width:500px;margin-inline:auto;}
-.hero p{font-size:16px;opacity:.85;max-width:420px;margin-inline:auto;line-height:1.6;}
-.hero .cta{display:inline-block;margin-top:28px;background:#fff;color:var(--verde-osc);font-size:17px;font-weight:800;padding:16px 36px;border-radius:50px;text-decoration:none;letter-spacing:.03em;}
-.hero .cta:hover{opacity:.92;}
+/* DIAPOSITIVAS */
+.slides-wrap{background:var(--verde-osc);padding:0;position:relative;overflow:hidden;}
+.slide{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:50px 28px 30px;min-height:420px;animation:fadeIn .5s ease;}
+.slide.activa{display:flex;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.slide-marca{font-size:32px;font-weight:900;color:#fff;letter-spacing:5px;margin-bottom:12px;}
+.slide-titulo{font-size:24px;font-weight:800;color:#fff;line-height:1.25;margin-bottom:12px;max-width:440px;}
+.slide-sub{font-size:15px;color:rgba(255,255,255,.85);line-height:1.65;max-width:420px;}
+.slide-ico{font-size:52px;font-weight:900;color:#9FE1CB;margin-bottom:16px;}
+.slide-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;width:100%;max-width:400px;}
+.slide-card{background:rgba(255,255,255,.12);border-radius:10px;padding:12px;text-align:left;}
+.slide-card .sc-ico{font-size:20px;font-weight:900;color:#9FE1CB;margin-bottom:4px;}
+.slide-card .sc-txt{font-size:13px;color:rgba(255,255,255,.9);}
+.slide-pasos{display:flex;flex-direction:column;gap:10px;margin-top:16px;max-width:380px;width:100%;}
+.slide-paso{background:rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:12px;text-align:left;}
+.slide-paso .sp-num{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0;}
+.slide-paso .sp-txt{font-size:13px;color:rgba(255,255,255,.9);line-height:1.4;}
+.slide-url{font-size:14px;color:#9FE1CB;margin-top:14px;font-weight:700;background:rgba(0,0,0,.2);padding:10px 20px;border-radius:30px;}
+.slide-cta{display:inline-block;margin-top:20px;background:#fff;color:var(--verde-osc);font-size:16px;font-weight:800;padding:14px 32px;border-radius:50px;text-decoration:none;}
+
+/* Controles slides */
+.slides-ctrl{display:flex;align-items:center;justify-content:space-between;padding:12px 18px 18px;background:var(--verde-osc);}
+.s-btn{background:rgba(255,255,255,.15);border:none;color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;}
+.s-btn:hover{background:rgba(255,255,255,.28);}
+.s-btn:disabled{opacity:.25;cursor:default;}
+.s-dots{display:flex;gap:6px;}
+.s-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:background .3s;}
+.s-dot.on{background:#9FE1CB;}
+.s-cnt{color:rgba(255,255,255,.55);font-size:12px;}
+.s-prog{width:calc(100% - 32px);margin:0 16px 0;background:rgba(255,255,255,.15);border-radius:3px;height:3px;}
+.s-fill{height:100%;border-radius:3px;background:#9FE1CB;transition:width .4s;}
 
 /* STATS */
-.stats{display:flex;justify-content:center;gap:0;background:#fff;border-bottom:1px solid #e8e8e5;}
-.stat{flex:1;max-width:160px;text-align:center;padding:24px 12px;border-right:1px solid #e8e8e5;}
+.stats{display:flex;justify-content:center;background:#fff;border-bottom:1px solid #e8e8e5;}
+.stat{flex:1;max-width:160px;text-align:center;padding:22px 10px;border-right:1px solid #e8e8e5;}
 .stat:last-child{border-right:none;}
-.stat .n{font-size:28px;font-weight:900;color:var(--verde-osc);}
-.stat .l{font-size:12px;color:var(--tx2);margin-top:4px;}
+.stat .n{font-size:26px;font-weight:900;color:var(--verde-osc);}
+.stat .l{font-size:11px;color:var(--tx2);margin-top:4px;}
 
 /* FEATURES */
-.features{padding:60px 24px;max-width:680px;margin:0 auto;}
-.features h2{font-size:22px;font-weight:800;text-align:center;margin-bottom:8px;}
-.features .sub{text-align:center;color:var(--tx2);margin-bottom:40px;font-size:15px;}
-.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.feat{background:var(--gris);border-radius:12px;padding:18px 16px;}
-.feat .ico{font-size:24px;font-weight:900;color:var(--verde-osc);margin-bottom:8px;}
-.feat h3{font-size:15px;font-weight:700;margin-bottom:4px;}
-.feat p{font-size:13px;color:var(--tx2);line-height:1.5;}
+.features{padding:50px 24px;max-width:680px;margin:0 auto;}
+.features h2{font-size:21px;font-weight:800;text-align:center;margin-bottom:8px;}
+.features .sub{text-align:center;color:var(--tx2);margin-bottom:32px;font-size:14px;}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.feat{background:var(--gris);border-radius:12px;padding:16px;}
+.feat .ico{font-size:22px;font-weight:900;color:var(--verde-osc);margin-bottom:6px;}
+.feat h3{font-size:14px;font-weight:700;margin-bottom:4px;}
+.feat p{font-size:12px;color:var(--tx2);line-height:1.5;}
 
-/* COMO FUNCIONA */
-.como{background:var(--verde-osc);color:#fff;padding:60px 24px;text-align:center;}
-.como h2{font-size:22px;font-weight:800;margin-bottom:40px;}
-.pasos{display:flex;flex-direction:column;gap:20px;max-width:440px;margin:0 auto;}
-.paso{display:flex;align-items:flex-start;gap:16px;text-align:left;}
-.paso .num{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0;}
-.paso .txt h3{font-size:15px;font-weight:700;margin-bottom:4px;}
+/* COMO */
+.como{background:var(--verde-osc);color:#fff;padding:50px 24px;text-align:center;}
+.como h2{font-size:21px;font-weight:800;margin-bottom:32px;}
+.pasos{display:flex;flex-direction:column;gap:16px;max-width:420px;margin:0 auto;}
+.paso{display:flex;align-items:flex-start;gap:14px;text-align:left;}
+.paso .num{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;flex-shrink:0;}
+.paso .txt h3{font-size:14px;font-weight:700;margin-bottom:3px;}
 .paso .txt p{font-size:13px;opacity:.8;line-height:1.5;}
 
-/* MODULOS */
-.modulos{padding:50px 24px;max-width:680px;margin:0 auto;}
-.modulos h2{font-size:22px;font-weight:800;text-align:center;margin-bottom:28px;}
-.mod-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
-.mod{background:var(--gris);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--tx2);}
+/* MÓDULOS */
+.modulos{padding:44px 24px;max-width:680px;margin:0 auto;}
+.modulos h2{font-size:21px;font-weight:800;text-align:center;margin-bottom:24px;}
+.mod-list{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;}
+.mod{background:var(--gris);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;color:var(--tx2);}
 
-/* CTA FINAL */
-.cta-final{background:var(--gris);padding:60px 24px;text-align:center;}
-.cta-final h2{font-size:22px;font-weight:800;margin-bottom:10px;}
-.cta-final p{color:var(--tx2);margin-bottom:24px;font-size:15px;}
-.btn-main{display:inline-block;background:var(--verde-osc);color:#fff;font-size:17px;font-weight:800;padding:16px 40px;border-radius:50px;text-decoration:none;letter-spacing:.03em;}
-.btn-main:hover{opacity:.9;}
+/* AVISO VERSIÓN BETA */
+.aviso{background:#FFF8E7;border-top:3px solid #EF9F27;padding:40px 24px;max-width:680px;margin:0 auto;}
+.aviso h2{font-size:18px;font-weight:800;margin-bottom:6px;color:#854F0B;}
+.aviso .av-sub{font-size:14px;color:#633806;margin-bottom:20px;}
+.av-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.av-item{background:#fff;border-radius:10px;padding:12px 14px;border:1.5px solid #FAC775;}
+.av-item .av-ico{font-size:20px;margin-bottom:6px;}
+.av-item h3{font-size:13px;font-weight:700;color:#854F0B;margin-bottom:3px;}
+.av-item p{font-size:12px;color:#633806;line-height:1.4;}
+.av-nota{margin-top:16px;font-size:13px;color:#854F0B;background:#fff;border-radius:10px;padding:12px 14px;border:1.5px solid #FAC775;}
 
-/* FOOTER */
-footer{padding:24px;text-align:center;font-size:12px;color:var(--tx2);border-top:1px solid #e8e8e5;}
+/* CTA */
+.cta-final{background:var(--gris);padding:50px 24px;text-align:center;}
+.cta-final h2{font-size:21px;font-weight:800;margin-bottom:10px;}
+.cta-final p{color:var(--tx2);margin-bottom:22px;font-size:14px;}
+.btn-main{display:inline-block;background:var(--verde-osc);color:#fff;font-size:16px;font-weight:800;padding:14px 36px;border-radius:50px;text-decoration:none;}
+
+footer{padding:20px 24px;text-align:center;font-size:12px;color:var(--tx2);border-top:1px solid #e8e8e5;}
 
 @media(max-width:480px){
-  .feat-grid{grid-template-columns:1fr;}
+  .feat-grid,.av-grid{grid-template-columns:1fr;}
   .stats{flex-wrap:wrap;}
   .stat{min-width:50%;}
-  .hero h1{font-size:24px;}
+  .slide-cards{grid-template-columns:1fr;}
+  .slide-titulo{font-size:20px;}
 }
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="marca">Vakax</div>
-  <h1>Tu rancho bajo control, desde el celular</h1>
-  <p>Ganado, finanzas, vacunas, potreros y más — todo en un solo lugar. Sin internet en el campo. Sin papeles.</p>
-  <a href="Vakax.html" class="cta">Abrir Vakax →</a>
+<!-- DIAPOSITIVAS ANIMADAS -->
+<div class="slides-wrap">
+
+  <div class="slide activa" id="s0">
+    <div class="slide-marca">VAKAX</div>
+    <div class="slide-titulo">Tu rancho bajo control, desde el celular</div>
+    <div class="slide-sub">Ganado, vacunas, finanzas, mapa satelital y más. Sin papeles. Sin complicaciones.</div>
+    <a href="Vakax.html" class="slide-cta">Abrir Vakax →</a>
+  </div>
+
+  <div class="slide" id="s1">
+    <div class="slide-ico">◈</div>
+    <div class="slide-titulo">Tu ganado siempre localizado</div>
+    <div class="slide-sub">Ficha completa por animal. Toma foto al arete y la app lo lee sola. Ve toda su historia en un toque.</div>
+    <div class="slide-pasos">
+      <div class="slide-paso"><div class="sp-num">1</div><div class="sp-txt">Tomas foto al arete</div></div>
+      <div class="slide-paso"><div class="sp-num">2</div><div class="sp-txt">La app lee el número sola</div></div>
+      <div class="slide-paso"><div class="sp-num">3</div><div class="sp-txt">Ves vacunas, pesos y partos del animal</div></div>
+    </div>
+  </div>
+
+  <div class="slide" id="s2">
+    <div class="slide-ico">✦</div>
+    <div class="slide-titulo">Nunca más se te olvida una vacuna</div>
+    <div class="slide-sub">Vakax te avisa antes de que venzan. Rojo es urgente. Amarillo es pronto. Sin que tengas que recordar nada.</div>
+    <div class="slide-cards">
+      <div class="slide-card"><div class="sc-ico">!</div><div class="sc-txt">Aftosa — Lupita · Vence en 3 días</div></div>
+      <div class="slide-card"><div class="sc-ico" style="color:#FAC775;">!</div><div class="sc-txt">Brucelosis — Volcán · Vence en 12 días</div></div>
+    </div>
+  </div>
+
+  <div class="slide" id="s3">
+    <div class="slide-ico">$</div>
+    <div class="slide-titulo">Toma foto a tus notas y facturas</div>
+    <div class="slide-sub">La app lee el monto y el concepto sola. Sin escribir nada. Tus gastos quedan guardados al instante.</div>
+    <div class="slide-pasos">
+      <div class="slide-paso"><div class="sp-num">📷</div><div class="sp-txt">Tomas foto a la nota o factura</div></div>
+      <div class="slide-paso"><div class="sp-num">✓</div><div class="sp-txt">Claude lee el monto y concepto automáticamente</div></div>
+    </div>
+  </div>
+
+  <div class="slide" id="s4">
+    <div class="slide-ico">◫</div>
+    <div class="slide-titulo">Ve tu rancho desde el satélite</div>
+    <div class="slide-sub">Dibuja tus potreros en el mapa. La app te dice cuáles están listos para pastar y cuáles necesitan descanso.</div>
+    <div class="slide-cards">
+      <div class="slide-card"><div class="sc-ico">●</div><div class="sc-txt">Listo para pastar</div></div>
+      <div class="slide-card"><div class="sc-ico" style="color:#FAC775;">●</div><div class="sc-txt">Descansando</div></div>
+      <div class="slide-card"><div class="sc-ico">↻</div><div class="sc-txt">Rotación automática</div></div>
+      <div class="slide-card"><div class="sc-ico">≡</div><div class="sc-txt">Salud del suelo</div></div>
+    </div>
+  </div>
+
+  <div class="slide" id="s5">
+    <div class="slide-ico">◐</div>
+    <div class="slide-titulo">Cada quien ve lo que le toca</div>
+    <div class="slide-sub">Cuatro accesos con contraseña. Sin enredos.</div>
+    <div class="slide-cards">
+      <div class="slide-card"><div class="sc-ico">◆</div><div class="sc-txt">Patrón — Ve todo</div></div>
+      <div class="slide-card"><div class="sc-ico">▲</div><div class="sc-txt">Administrador — Gestión completa</div></div>
+      <div class="slide-card"><div class="sc-ico">✚</div><div class="sc-txt">Veterinario — Solo salud</div></div>
+      <div class="slide-card"><div class="sc-ico">◉</div><div class="sc-txt">Vaquero — Su trabajo</div></div>
+    </div>
+  </div>
+
+  <div class="slide" id="s6">
+    <div class="slide-ico">▣</div>
+    <div class="slide-titulo">Importa tu libreta con la cámara</div>
+    <div class="slide-sub">¿Tienes años de datos en libretas? Toma foto y Claude los lee y los agrega a la app automáticamente.</div>
+    <div class="slide-pasos">
+      <div class="slide-paso"><div class="sp-num">📷</div><div class="sp-txt">Tomas foto a tu libreta de apuntes</div></div>
+      <div class="slide-paso"><div class="sp-num">◈</div><div class="sp-txt">Claude detecta animales, vacunas, gastos o pesajes</div></div>
+      <div class="slide-paso"><div class="sp-num">✓</div><div class="sp-txt">Los datos se agregan solos a la app</div></div>
+    </div>
+  </div>
+
+  <div class="slide" id="s7">
+    <div class="slide-marca">VAKAX</div>
+    <div class="slide-titulo">Tu rancho bajo control</div>
+    <div class="slide-sub">Entra gratis hoy. Sin registro. Sin tarjeta. Configura tu rancho en 2 minutos.</div>
+    <div class="slide-url">grupofeyhel.github.io/Vakax/Vakax.html</div>
+    <a href="Vakax.html" class="slide-cta" style="margin-top:20px;">Abrir Vakax →</a>
+  </div>
+
+  <div class="s-prog"><div class="s-fill" id="sFill" style="width:12.5%;"></div></div>
+  <div class="slides-ctrl">
+    <button class="s-btn" id="sPrev" onclick="sNav(-1)" disabled>← Anterior</button>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+      <div class="s-dots" id="sDots"></div>
+      <div class="s-cnt" id="sCnt">1 / 8</div>
+    </div>
+    <button class="s-btn" id="sNext" onclick="sNav(1)">Siguiente →</button>
+  </div>
 </div>
 
 <!-- STATS -->
 <div class="stats">
-  <div class="stat"><div class="n">30+</div><div class="l">Módulos incluidos</div></div>
+  <div class="stat"><div class="n">30+</div><div class="l">Módulos</div></div>
   <div class="stat"><div class="n">100%</div><div class="l">Gratis en prueba</div></div>
-  <div class="stat"><div class="n">0</div><div class="l">Papeles necesarios</div></div>
+  <div class="stat"><div class="n">0</div><div class="l">Papeles</div></div>
 </div>
 
 <!-- FEATURES -->
@@ -98,46 +219,14 @@ footer{padding:24px;text-align:center;font-size:12px;color:var(--tx2);border-top
   <h2>Todo lo que necesita un rancho moderno</h2>
   <p class="sub">Diseñado para rancheros de Tabasco y el sureste de México</p>
   <div class="feat-grid">
-    <div class="feat">
-      <div class="ico">◈</div>
-      <h3>Inventario de ganado</h3>
-      <p>Ficha completa por animal, historial de pesos, genealogía y fotos. Escanea aretes con la cámara.</p>
-    </div>
-    <div class="feat">
-      <div class="ico">✦</div>
-      <h3>Vacunas y salud</h3>
-      <p>Alertas automáticas cuando vence una vacuna. Registro de tratamientos con dosis y días de retiro.</p>
-    </div>
-    <div class="feat">
-      <div class="ico">$</div>
-      <h3>Finanzas del rancho</h3>
-      <p>Escanea notas y facturas con la cámara. Costo por animal, presupuesto anual y comparativo vs año anterior.</p>
-    </div>
-    <div class="feat">
-      <div class="ico">◫</div>
-      <h3>Mapa satelital</h3>
-      <p>Dibuja tus potreros en el mapa. Rotación con fechas de entrada y salida. Días de descanso automáticos.</p>
-    </div>
-    <div class="feat">
-      <div class="ico">◎</div>
-      <h3>Asistente con IA</h3>
-      <p>Pregunta por voz o texto. Conoce tu rancho y responde dudas sobre vacunas, pastizales y alimentación.</p>
-    </div>
-    <div class="feat">
-      <div class="ico">◐</div>
-      <h3>Roles de acceso</h3>
-      <p>Patrón, Administrador, Veterinario y Vaquero. Cada quien ve solo lo que le corresponde.</p>
-    </div>
-    <div class="feat">
-      <div class="ico">≋</div>
-      <h3>Clima automático</h3>
-      <p>Descarga los datos de lluvia de los últimos 30 días automáticamente. Sin pluviómetro.</p>
-    </div>
-    <div class="feat">
-      <div class="ico">▤</div>
-      <h3>Sin internet en campo</h3>
-      <p>Instálala en tu celular como app. Funciona aunque no haya señal. Sincroniza cuando haya conexión.</p>
-    </div>
+    <div class="feat"><div class="ico">◈</div><h3>Inventario de ganado</h3><p>Ficha completa por animal, historial de pesos, genealogía y fotos.</p></div>
+    <div class="feat"><div class="ico">✦</div><h3>Vacunas y salud</h3><p>Alertas automáticas cuando vence una vacuna. Tratamientos con dosis y días de retiro.</p></div>
+    <div class="feat"><div class="ico">$</div><h3>Finanzas del rancho</h3><p>Escanea notas y facturas. Costo por animal, presupuesto anual y comparativo anual.</p></div>
+    <div class="feat"><div class="ico">◫</div><h3>Mapa satelital</h3><p>Dibuja tus potreros. Rotación con fechas de entrada y salida. Días de descanso automáticos.</p></div>
+    <div class="feat"><div class="ico">◎</div><h3>Asistente con IA</h3><p>Pregunta por voz o texto. Responde dudas sobre vacunas, pastizales y alimentación.</p></div>
+    <div class="feat"><div class="ico">▣</div><h3>Importar desde libreta</h3><p>Toma foto a tus libretas y Claude importa los datos automáticamente.</p></div>
+    <div class="feat"><div class="ico">≋</div><h3>Clima automático</h3><p>Descarga datos de lluvia de los últimos 30 días. Sin pluviómetro.</p></div>
+    <div class="feat"><div class="ico">▤</div><h3>Sin internet en campo</h3><p>Instálala como app. Funciona aunque no haya señal.</p></div>
   </div>
 </div>
 
@@ -145,34 +234,10 @@ footer{padding:24px;text-align:center;font-size:12px;color:var(--tx2);border-top
 <div class="como">
   <h2>¿Cómo empiezo?</h2>
   <div class="pasos">
-    <div class="paso">
-      <div class="num">1</div>
-      <div class="txt">
-        <h3>Abre Vakax</h3>
-        <p>Toca el botón "Abrir Vakax" y escribe el nombre de tu rancho. Solo toma 2 minutos configurarlo.</p>
-      </div>
-    </div>
-    <div class="paso">
-      <div class="num">2</div>
-      <div class="txt">
-        <h3>Instala en tu celular</h3>
-        <p>En Chrome toca el menú ⋮ → "Instalar app". En iPhone usa el botón Compartir → "Agregar a inicio".</p>
-      </div>
-    </div>
-    <div class="paso">
-      <div class="num">3</div>
-      <div class="txt">
-        <h3>Empieza a registrar</h3>
-        <p>Agrega tu ganado, tus potreros y tus primeras vacunas. La app empieza a trabajar por ti desde el primer día.</p>
-      </div>
-    </div>
-    <div class="paso">
-      <div class="num">4</div>
-      <div class="txt">
-        <h3>Comparte con tu equipo</h3>
-        <p>Da acceso a tu administrador, veterinario y vaqueros. Cada uno entra con su propia contraseña.</p>
-      </div>
-    </div>
+    <div class="paso"><div class="num">1</div><div class="txt"><h3>Abre Vakax</h3><p>Toca "Abrir Vakax" y escribe el nombre de tu rancho. Solo toma 2 minutos.</p></div></div>
+    <div class="paso"><div class="num">2</div><div class="txt"><h3>Instala en tu celular</h3><p>En Chrome: menú ⋮ → "Instalar app". En iPhone: Compartir → "Agregar a inicio".</p></div></div>
+    <div class="paso"><div class="num">3</div><div class="txt"><h3>Empieza a registrar</h3><p>Agrega tu ganado, potreros y primeras vacunas. La app trabaja por ti desde el primer día.</p></div></div>
+    <div class="paso"><div class="num">4</div><div class="txt"><h3>Comparte con tu equipo</h3><p>Da acceso a tu administrador, veterinario y vaqueros con su propia contraseña.</p></div></div>
   </div>
 </div>
 
@@ -180,57 +245,89 @@ footer{padding:24px;text-align:center;font-size:12px;color:var(--tx2);border-top
 <div class="modulos">
   <h2>Más de 30 módulos incluidos</h2>
   <div class="mod-list">
-    <div class="mod">Ganado</div>
-    <div class="mod">Ficha por animal</div>
-    <div class="mod">Genealogía</div>
-    <div class="mod">Vacunas</div>
-    <div class="mod">Alertas</div>
-    <div class="mod">Tratamientos</div>
-    <div class="mod">Pesos</div>
-    <div class="mod">Historial de pesos</div>
-    <div class="mod">Leche</div>
-    <div class="mod">Partos</div>
-    <div class="mod">Finanzas</div>
-    <div class="mod">Escaneo de notas</div>
-    <div class="mod">Insumos</div>
-    <div class="mod">Escaneo de productos</div>
-    <div class="mod">Personal</div>
-    <div class="mod">Nómina</div>
-    <div class="mod">Potreros</div>
-    <div class="mod">Mapa satelital</div>
-    <div class="mod">Rotación</div>
-    <div class="mod">Salud del suelo</div>
-    <div class="mod">Lluvia</div>
-    <div class="mod">Clima automático</div>
-    <div class="mod">Tareas del día</div>
-    <div class="mod">Roles de acceso</div>
-    <div class="mod">Costo por animal</div>
-    <div class="mod">Reportes</div>
-    <div class="mod">Comparativo anual</div>
-    <div class="mod">Presupuesto</div>
-    <div class="mod">Calendario</div>
-    <div class="mod">Galería de fotos</div>
-    <div class="mod">Asistente IA por voz</div>
-    <div class="mod">Proyecciones</div>
-    <div class="mod">Exportar a Excel</div>
-    <div class="mod">Reporte PDF</div>
-    <div class="mod">Notificaciones</div>
-    <div class="mod">Historial de cambios</div>
-    <div class="mod">Sin internet</div>
+    <div class="mod">Ganado</div><div class="mod">Ficha por animal</div><div class="mod">Genealogía</div>
+    <div class="mod">Vacunas</div><div class="mod">Alertas</div><div class="mod">Tratamientos</div>
+    <div class="mod">Pesos</div><div class="mod">Historial de pesos</div><div class="mod">Leche</div>
+    <div class="mod">Partos</div><div class="mod">Finanzas</div><div class="mod">Escaneo de notas</div>
+    <div class="mod">Insumos</div><div class="mod">Escaneo de productos</div><div class="mod">Personal</div>
+    <div class="mod">Nómina</div><div class="mod">Potreros</div><div class="mod">Mapa satelital</div>
+    <div class="mod">Rotación</div><div class="mod">Salud del suelo</div><div class="mod">Lluvia</div>
+    <div class="mod">Clima automático</div><div class="mod">Tareas del día</div><div class="mod">Roles de acceso</div>
+    <div class="mod">Costo por animal</div><div class="mod">Reportes</div><div class="mod">Comparativo anual</div>
+    <div class="mod">Presupuesto</div><div class="mod">Calendario</div><div class="mod">Galería de fotos</div>
+    <div class="mod">Asistente IA por voz</div><div class="mod">Proyecciones</div><div class="mod">Exportar a Excel</div>
+    <div class="mod">Reporte PDF</div><div class="mod">Historial de cambios</div><div class="mod">Importar desde libreta</div>
+  </div>
+</div>
+
+<!-- AVISO VERSIÓN BETA -->
+<div style="background:#FFF8E7;border-top:3px solid #EF9F27;padding:40px 24px;">
+  <div style="max-width:680px;margin:0 auto;">
+    <h2 style="font-size:18px;font-weight:800;color:#854F0B;margin-bottom:6px;">⚠ Versión de prueba — Funciones que requieren internet</h2>
+    <p style="font-size:14px;color:#633806;margin-bottom:20px;">Las siguientes funciones necesitan conexión a internet para funcionar. El resto de la app funciona sin señal.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:#fff;border-radius:10px;padding:12px 14px;border:1.5px solid #FAC775;">
+        <div style="font-size:20px;margin-bottom:6px;">📷</div>
+        <h3 style="font-size:13px;font-weight:700;color:#854F0B;margin-bottom:3px;">Cámara con IA</h3>
+        <p style="font-size:12px;color:#633806;line-height:1.4;">Escaneo de aretes, notas, facturas, productos y fierro. Requiere internet para analizar las fotos.</p>
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:12px 14px;border:1.5px solid #FAC775;">
+        <div style="font-size:20px;margin-bottom:6px;">◎</div>
+        <h3 style="font-size:13px;font-weight:700;color:#854F0B;margin-bottom:3px;">Asistente IA por voz</h3>
+        <p style="font-size:12px;color:#633806;line-height:1.4;">El chat y el dictado por voz requieren internet para conectarse con Claude.</p>
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:12px 14px;border:1.5px solid #FAC775;">
+        <div style="font-size:20px;margin-bottom:6px;">🌧️</div>
+        <h3 style="font-size:13px;font-weight:700;color:#854F0B;margin-bottom:3px;">Clima automático</h3>
+        <p style="font-size:12px;color:#633806;line-height:1.4;">La descarga de datos de lluvia de Open-Meteo requiere internet.</p>
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:12px 14px;border:1.5px solid #FAC775;">
+        <div style="font-size:20px;margin-bottom:6px;">◫</div>
+        <h3 style="font-size:13px;font-weight:700;color:#854F0B;margin-bottom:3px;">Mapa satelital</h3>
+        <p style="font-size:12px;color:#633806;line-height:1.4;">Las imágenes del mapa se cargan desde internet. Sin señal muestra el mapa en blanco.</p>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:13px;color:#854F0B;background:#fff;border-radius:10px;padding:12px 14px;border:1.5px solid #FAC775;">
+      ✅ <strong>Todo lo demás funciona sin internet:</strong> ganado, vacunas, finanzas, pesos, leche, partos, tareas, potreros, rotación, suelo, insumos, reportes, presupuesto, calendario, galería y más.
+    </div>
   </div>
 </div>
 
 <!-- CTA FINAL -->
 <div class="cta-final">
   <h2>Empieza hoy, gratis</h2>
-  <p>Sin registro. Sin tarjeta. Abre la app y configura tu rancho en 2 minutos.</p>
+  <p>Sin registro. Sin tarjeta. Configura tu rancho en 2 minutos.</p>
   <a href="Vakax.html" class="btn-main">Abrir Vakax →</a>
 </div>
 
 <footer>
   Vakax — Sistema de gestión ganadera para el campo mexicano<br>
-  <span style="margin-top:4px;display:block;">Para soporte o información: contacto@vakax.lat</span>
+  <span style="margin-top:4px;display:block;">Para soporte: contacto@vakax.lat | WhatsApp: 993 399 8721</span>
 </footer>
 
+<script>
+const total=8;let actual=0,auto=null;
+const dots=document.getElementById('sDots');
+for(let i=0;i<total;i++){
+  const d=document.createElement('div');
+  d.className='s-dot'+(i===0?' on':'');
+  d.onclick=()=>sIr(i);
+  dots.appendChild(d);
+}
+function sIr(n){
+  document.getElementById('s'+actual).classList.remove('activa');
+  actual=Math.max(0,Math.min(total-1,n));
+  document.getElementById('s'+actual).classList.add('activa');
+  document.getElementById('sFill').style.width=((actual+1)/total*100)+'%';
+  document.getElementById('sCnt').textContent=(actual+1)+' / '+total;
+  document.getElementById('sPrev').disabled=actual===0;
+  document.getElementById('sNext').disabled=actual===total-1;
+  document.querySelectorAll('.s-dot').forEach((d,i)=>d.className='s-dot'+(i===actual?' on':''));
+  if(auto)clearInterval(auto);
+  if(actual<total-1)auto=setInterval(()=>sIr(actual+1),5000);
+}
+function sNav(d){sIr(actual+d);}
+auto=setInterval(()=>sIr(actual+1),5000);
+</script>
 </body>
 </html>

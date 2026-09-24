@@ -2999,14 +2999,18 @@ Potreros: ${DB.potreros.map(p=>p.nombre+' ('+p.pasto+')').join(', ')}.
 Responde de forma simple, clara y práctica. Máximo 150 palabras. En español.`;
 
   try{
+    // Incluir contexto como primer mensaje de usuario para compatibilidad
+    const mensajes=[
+      {role:'user',content:`[Contexto del rancho: ${ctx}] Por favor responde como asistente ganadero experto.`},
+      {role:'assistant',content:'Entendido. Soy tu asistente ganadero. ¿En qué te puedo ayudar?'},
+      ...CHAT_HIST.map(h=>({role:h.role,content:h.content}))
+    ];
     const res=await fetch('https://vakax-proxy.grupofeyhel.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:400,
-        system:ctx,
-        messages:CHAT_HIST.map(h=>({role:h.role,content:h.content}))})});
+        messages:mensajes})});
     const d=await res.json();
     const resp=d.content?.map(c=>c.text||'').join('')||'Lo siento, no pude responder.';
     CHAT_HIST.push({role:'assistant',content:resp});
-    // Leer respuesta en voz alta
     leerEnVoz(resp);
   }catch(e){
     CHAT_HIST.push({role:'assistant',content:'Sin conexión. Intenta de nuevo.'});

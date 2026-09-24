@@ -3000,7 +3000,7 @@ Responde de forma simple, clara y práctica. Máximo 150 palabras. En español.`
 
   try{
     const res=await fetch('https://vakax-proxy.grupofeyhel.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:400,
         system:ctx,
         messages:CHAT_HIST.map(h=>({role:h.role,content:h.content}))})});
     const d=await res.json();
@@ -4056,7 +4056,7 @@ async function callAI(content){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-4-6',
         max_tokens:1000,
         messages:[{role:'user',content}]
       })

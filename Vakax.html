@@ -199,6 +199,33 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--gris);color:va
   📵 Sin internet — trabajando en modo offline. Los cambios se guardarán cuando haya conexión.
 </div>
 
+<!-- SELECTOR DE RANCHO -->
+<div id="ranchoScreen" style="display:none;">
+  <div class="login-wrap">
+    <div class="login-box" style="max-width:380px;">
+      <div style="text-align:center;margin-bottom:24px;border-bottom:1px solid var(--gris2);padding-bottom:20px;">
+        <div style="font-size:32px;font-weight:900;color:var(--verde);letter-spacing:4px;">VAKAX</div>
+        <div style="font-size:14px;color:var(--tx2);margin-top:6px;">¿Con cuál rancho vas a trabajar hoy?</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        ${Object.values(RANCHOS_CFG||{}).map?'':''} 
+        <button onclick="seleccionarRancho('limonar')" style="background:#fff;border:1.5px solid var(--gris2);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left;" id="rb-rancho-limonar">
+          <div style="width:42px;height:42px;background:var(--verde-cla);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:var(--verde-osc);flex-shrink:0;">L</div>
+          <div><div style="font-size:15px;font-weight:700;">Rancho Limonar</div><div id="stats-limonar" style="font-size:12px;color:var(--tx2);">Cargando...</div></div>
+        </button>
+        <button onclick="seleccionarRancho('herradura')" style="background:#fff;border:1.5px solid var(--gris2);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left;" id="rb-rancho-herradura">
+          <div style="width:42px;height:42px;background:var(--azul-cla);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:var(--azul);flex-shrink:0;">H</div>
+          <div><div style="font-size:15px;font-weight:700;">Rancho Herradura</div><div id="stats-herradura" style="font-size:12px;color:var(--tx2);">Cargando...</div></div>
+        </button>
+        <button onclick="seleccionarRancho('victoria')" style="background:#fff;border:1.5px solid var(--gris2);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left;" id="rb-rancho-victoria">
+          <div style="width:42px;height:42px;background:#F5E6D3;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#7B3F00;flex-shrink:0;">V</div>
+          <div><div style="font-size:15px;font-weight:700;">Rancho La Victoria</div><div id="stats-victoria" style="font-size:12px;color:var(--tx2);">Cargando...</div></div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- PANTALLA DE LOGIN CON TELÉFONO -->
 <div id="phoneScreen" style="display:none;">
   <div class="login-wrap">
@@ -442,6 +469,51 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--gris);color:va
 
 <script>
 // ═══ BASE DE DATOS ═════════════════════════════════════════
+// ═══ MULTI-RANCHO ══════════════════════════════════════════
+let RANCHO_ACT='limonar'; // rancho activo actual
+
+const RANCHOS_CFG={
+  limonar:  {id:'limonar',  nombre:'Rancho Limonar',   fierro:'',estado:'Tabasco',municipio:''},
+  herradura:{id:'herradura',nombre:'Rancho Herradura',  fierro:'',estado:'Tabasco',municipio:''},
+  victoria: {id:'victoria', nombre:'Rancho La Victoria',fierro:'',estado:'Tabasco',municipio:''},
+};
+
+// Datos separados por rancho
+let DATOS_RANCHOS={
+  limonar:  null,
+  herradura:null,
+  victoria: null,
+};
+
+function ranchoDB(id){
+  if(!DATOS_RANCHOS[id]){
+    DATOS_RANCHOS[id]={
+      cfg:{...RANCHOS_CFG[id],rfc:'',nombre:'',regimen:'612',cp:'',lat:null,lon:null,_setup:true},
+      ganado:[],salud:[],leche:[],repro:[],finanzas:[],personal:[],potreros:[],
+      rotaciones:[],tareas:[],pesos:[],tratamientos:[],lluvia:[],suelo:[],
+      insumos:[],galeria:[],genealogia:[],historial:[],mercado:[],documentos:[],
+      presupuesto:{anio:new Date().getFullYear(),
+        cats:{'Insumos':{ene:0,feb:0,mar:0,abr:0,may:0,jun:0,jul:0,ago:0,sep:0,oct:0,nov:0,dic:0},
+              'Veterinaria':{ene:0,feb:0,mar:0,abr:0,may:0,jun:0,jul:0,ago:0,sep:0,oct:0,nov:0,dic:0},
+              'Personal':{ene:0,feb:0,mar:0,abr:0,may:0,jun:0,jul:0,ago:0,sep:0,oct:0,nov:0,dic:0},
+              'Operación':{ene:0,feb:0,mar:0,abr:0,may:0,jun:0,jul:0,ago:0,sep:0,oct:0,nov:0,dic:0}},
+        ingresos:{ene:0,feb:0,mar:0,abr:0,may:0,jun:0,jul:0,ago:0,sep:0,oct:0,nov:0,dic:0}},
+    };
+  }
+  return DATOS_RANCHOS[id];
+}
+
+function cambiarRancho(id){
+  // Guardar datos actuales
+  DATOS_RANCHOS[RANCHO_ACT]=JSON.parse(JSON.stringify(DB));
+  RANCHO_ACT=id;
+  // Cargar datos del rancho seleccionado
+  const d=ranchoDB(id);
+  Object.keys(DB).forEach(k=>{if(d[k]!==undefined)DB[k]=d[k];});
+  syncNow();
+  nav('home');
+}
+
 const DB={
   cfg:{rancho:'',rfc:'',nombre:'',regimen:'612',cp:'',lat:null,lon:null,fierro:'',estado:'',municipio:'',_setup:false},
   ganado:[],
@@ -626,13 +698,20 @@ function logout(){
 
 function renderTopbar(){
   const r=ROLES[ROL_ACT];
+  const rColor={limonar:'var(--verde-osc)',herradura:'var(--azul)',victoria:'#7B3F00'};
   $('topbar').innerHTML=`
     <button class="topbar-back" id="btnBack" onclick="goHome()" style="display:none">◀</button>
-    <span class="topbar-title" id="topTitle">${DB.cfg.rancho||'MiRancho'}</span>
+    <span class="topbar-title" id="topTitle">${DB.cfg.rancho||'Vakax'}</span>
     <span id="alertBadge" class="topbar-badge" style="display:none"></span>
-    <span class="rol-badge" onclick="logout()" title="Cerrar sesión" style="font-size:12px;gap:4px;">
-      <span style="font-weight:900;font-size:14px;">${r.ico}</span> ${r.nom}
-    </span>`;
+    <div style="display:flex;align-items:center;gap:6px;">
+      <button onclick="mostrarSelectorRancho()" title="Cambiar rancho"
+        style="background:${rColor[RANCHO_ACT]||'var(--verde-osc)'};color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">
+        ${RANCHO_ACT==='limonar'?'L':RANCHO_ACT==='herradura'?'H':'V'}
+      </button>
+      <span class="rol-badge" onclick="logout()" title="Cerrar sesión" style="font-size:12px;gap:4px;">
+        <span style="font-weight:900;font-size:14px;">${r.ico}</span> ${r.nom}
+      </span>
+    </div>`;
 }
 
 function puedeVer(tab){return PERMISOS[ROL_ACT]?.includes(tab);}
@@ -678,26 +757,54 @@ async function enviarSMS(){
   trackEvento('sms_enviado','Auth',(lada+num).slice(0,6)+'****');
 }
 
+function mostrarSelectorRancho(){
+  // Actualizar stats de cada rancho
+  ['limonar','herradura','victoria'].forEach(id=>{
+    const d=ranchoDB(id);
+    const ac=d.ganado.filter(g=>g.estado==='Activo').length;
+    const el=document.getElementById('stats-'+id);
+    if(el)el.textContent=ac>0?`${ac} animales activos`:'Sin animales registrados';
+  });
+  $('phoneScreen').style.display='none';
+  $('setupScreen').style.display='none';
+  $('loginScreen').style.display='none';
+  $('topbar').style.display='none';
+  $('mainPg').style.display='none';
+  $('ranchoScreen').style.display='block';
+}
+
+function seleccionarRancho(id){
+  RANCHO_ACT=id;
+  const d=ranchoDB(id);
+  Object.keys(DB).forEach(k=>{if(d[k]!==undefined)DB[k]=d[k];});
+  $('ranchoScreen').style.display='none';
+  // Si el rancho ya está configurado ir al login de roles
+  // Si no, ir al setup
+  if(DB.cfg._setup&&DB.cfg.rancho){
+    $('loginScreen').style.display='block';
+    renderLoginBtns();
+  } else {
+    DB.cfg.rancho=RANCHOS_CFG[id].nombre;
+    DB.cfg._setup=true;
+    $('loginScreen').style.display='block';
+    renderLoginBtns();
+  }
+}
+
 async function verificarCodigo(){
   const code=$('ph-code').value.trim();
   if(!code||code.length!==6){
     $('ph-err2').textContent='El código debe tener 6 dígitos';
     $('ph-err2').style.display='block';return;
   }
-  // Código de prueba: 123456
   if(code!=='123456'){
     $('ph-err2').textContent='Código incorrecto. Usa 123456 para pruebas.';
     $('ph-err2').style.display='block';return;
   }
   $('ph-err2').style.display='none';
-  // Verificado — mostrar setup o login
   $('phoneScreen').style.display='none';
-  if(!DB.cfg._setup||!DB.cfg.rancho){
-    $('setupScreen').style.display='block';
-  } else {
-    $('loginScreen').style.display='block';
-    renderLoginBtns();
-  }
+  // Ir al selector de rancho
+  mostrarSelectorRancho();
   trackEvento('login_exitoso','Auth','codigo_prueba');
 }
 
@@ -726,14 +833,21 @@ async function loadCloud(){
       const r=await window.storage.get('vakax-v1');
       if(r&&r.value){
         const d=JSON.parse(r.value);
-        Object.keys(DB).forEach(k=>{if(d[k]!==undefined)DB[k]=d[k];});
+        if(d.ranchos){
+          DATOS_RANCHOS=d.ranchos;
+          RANCHO_ACT=d._rancho_act||'limonar';
+          const rd=ranchoDB(RANCHO_ACT);
+          Object.keys(DB).forEach(k=>{if(rd[k]!==undefined)DB[k]=rd[k];});
+        } else {
+          Object.keys(DB).forEach(k=>{if(d[k]!==undefined)DB[k]=d[k];});
+          DATOS_RANCHOS['victoria']=JSON.parse(JSON.stringify(DB));
+        }
         if(d._roles)Object.keys(d._roles).forEach(k=>{if(ROLES[k]){ROLES[k].pin=d._roles[k].pin;ROLES[k].activo=d._roles[k].activo;}});
       }
     }
   }catch(e){}
-
-  // Primer uso: mostrar phone screen
   $('phoneScreen').style.display='block';
+  $('ranchoScreen').style.display='none';
   $('setupScreen').style.display='none';
   $('loginScreen').style.display='none';
   $('topbar').style.display='none';
@@ -1275,9 +1389,15 @@ function detectarUbicacion(){
 async function syncNow(){
   SDOT='sync';
   const snap={};Object.entries(ROLES).forEach(([k,r])=>{snap[k]={pin:r.pin,activo:r.activo};});
-  // Guardar en localStorage como respaldo
-  try{if(window.storage){await window.storage.set('vakax-v1',JSON.stringify({...JSON.parse(JSON.stringify(DB)),_roles:snap}));}}catch(e){}
-  // Guardar en Firestore
+  // Actualizar datos del rancho activo en memoria
+  DATOS_RANCHOS[RANCHO_ACT]=JSON.parse(JSON.stringify(DB));
+  try{if(window.storage){
+    await window.storage.set('vakax-v1',JSON.stringify({
+      ranchos:DATOS_RANCHOS,
+      _roles:snap,
+      _rancho_act:RANCHO_ACT
+    }));
+  }}catch(e){}
   if(window.syncFirestore)await window.syncFirestore();
   SDOT='ok';
 }
